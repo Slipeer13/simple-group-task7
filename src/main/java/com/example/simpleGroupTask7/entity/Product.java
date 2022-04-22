@@ -19,14 +19,7 @@ public class Product {
 
     private Integer price;
 
-    public Product() {
-    }
-
     //todo Не используется этот конструктор. Зачем он?
-    public Product(String title, Integer price) {
-        this.title = title;
-        this.price = price;
-    }
 
     @Override
     public boolean equals(Object o) {
