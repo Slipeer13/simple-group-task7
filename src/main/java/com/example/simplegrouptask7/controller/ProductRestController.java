@@ -46,9 +46,7 @@ public class ProductRestController {
     //      Для чего слэш в конце адреса?
     @PostMapping("/products")
     public Product saveOrUpdateProduct(@RequestBody Product product) {
-        System.out.println(product);
         Product productFromDB = productService.findProductByTitleAndPrice(product.getTitle(), product.getPrice());
-        System.out.println(productFromDB);
         if(product.equals(productFromDB)) {
             throw new IsSuchProductException("there is such a product in database");
         }
