@@ -1,14 +1,13 @@
-package com.example.simpleGroupTask7.controller;
+package com.example.simplegrouptask7.controller;
 
-import com.example.simpleGroupTask7.entity.Product;
-import com.example.simpleGroupTask7.exceptionHandling.IsSuchProductException;
-import com.example.simpleGroupTask7.exceptionHandling.NoSuchProductException;
-import com.example.simpleGroupTask7.exceptionHandling.ProductIncorrectData;
-import com.example.simpleGroupTask7.service.ProductService;
+import com.example.simplegrouptask7.entity.Product;
+import com.example.simplegrouptask7.exceptionHandling.IsSuchProductException;
+import com.example.simplegrouptask7.exceptionHandling.NoSuchProductException;
+import com.example.simplegrouptask7.exceptionHandling.ProductIncorrectData;
+import com.example.simplegrouptask7.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -64,7 +63,7 @@ public class ProductRestController {
             throw new NoSuchProductException("There is no product with id = " + id);
         }
         productService.deleteByIdProduct(id);
-        return "Product with id " + id + "was deleted";
+        return "Product " + product.getTitle() + " was deleted";
     }
 
     @ExceptionHandler

@@ -1,6 +1,6 @@
-package com.example.simpleGroupTask7.dao;
+package com.example.simplegrouptask7.dao;
 
-import com.example.simpleGroupTask7.entity.Product;
+import com.example.simplegrouptask7.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

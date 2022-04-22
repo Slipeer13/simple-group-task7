@@ -1,7 +1,7 @@
-package com.example.simpleGroupTask7.service;
+package com.example.simplegrouptask7.service;
 
-import com.example.simpleGroupTask7.dao.ProductRepository;
-import com.example.simpleGroupTask7.entity.Product;
+import com.example.simplegrouptask7.dao.ProductRepository;
+import com.example.simplegrouptask7.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
