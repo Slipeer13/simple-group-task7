@@ -1,6 +1,7 @@
 package com.example.simpleGroupTask7.controller;
 
 import com.example.simpleGroupTask7.entity.Product;
+import com.example.simpleGroupTask7.exceptionHandling.IsSuchProductException;
 import com.example.simpleGroupTask7.exceptionHandling.NoSuchProductException;
 import com.example.simpleGroupTask7.exceptionHandling.ProductIncorrectData;
 import com.example.simpleGroupTask7.service.ProductService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RestController
@@ -25,8 +27,7 @@ public class ProductRestController {
     //todo Зачем именованная переменная, можно сразу возвращать результат работы сервиса.
     @GetMapping("/products")
     public List<Product> showAllProducts() {
-        List<Product> allProducts = productService.findAllProducts();
-        return allProducts;
+        return productService.findAllProducts();
     }
 
     //todo Есть уже EntityNotFoundException. Свою можно не делать.
@@ -34,7 +35,7 @@ public class ProductRestController {
     public Product getProduct(@PathVariable(name="id") Long id) {
         Product product = productService.findByIdProduct(id);
         if(product == null) {
-            throw new NoSuchProductException("There is no product with id = " + id);
+            throw new EntityNotFoundException("There is no product with id = " + id);
         }
         return product;
     }
@@ -44,8 +45,14 @@ public class ProductRestController {
     //      Сейчас они просто добавляются, если в бд нет настроек об уникальности каких-либо полей.
     //      Мне кажется, что это не логично.
     //      Для чего слэш в конце адреса?
-    @PostMapping("/products/")
-    public Product getProduct(@RequestBody Product product) {
+    @PostMapping("/products")
+    public Product saveOrUpdateProduct(@RequestBody Product product) {
+        System.out.println(product);
+        Product productFromDB = productService.findProductByTitleAndPrice(product.getTitle(), product.getPrice());
+        System.out.println(productFromDB);
+        if(product.equals(productFromDB)) {
+            throw new IsSuchProductException("there is such a product in database");
+        }
         productService.saveOrUpdateProduct(product);
         return product;
     }
@@ -70,6 +77,12 @@ public class ProductRestController {
     public ResponseEntity<ProductIncorrectData> handleException(Exception exception) {
         ProductIncorrectData productIncorrectData =  new ProductIncorrectData(exception.getMessage());
         return new ResponseEntity<>(productIncorrectData, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ProductIncorrectData> handleException(IsSuchProductException exception) {
+        ProductIncorrectData productIncorrectData =  new ProductIncorrectData(exception.getMessage());
+        return new ResponseEntity<>(productIncorrectData, HttpStatus.OK);
     }
 
 }

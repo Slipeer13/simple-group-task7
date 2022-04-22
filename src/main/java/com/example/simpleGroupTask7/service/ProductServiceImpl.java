@@ -4,7 +4,6 @@ import com.example.simpleGroupTask7.dao.ProductRepository;
 import com.example.simpleGroupTask7.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +40,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void saveOrUpdateProduct(Product product) {
         productRepository.save(product);
+    }
+
+    @Override
+    public Product findProductByTitleAndPrice(String title, int price) {
+        return productRepository.findProductByTitleAndPrice(title, price);
     }
 
 

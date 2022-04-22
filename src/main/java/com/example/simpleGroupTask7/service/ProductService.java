@@ -14,6 +14,5 @@ public interface ProductService {
 
     void saveOrUpdateProduct(Product product);
 
-
-
+    Product findProductByTitleAndPrice(String title, int price);
 }
