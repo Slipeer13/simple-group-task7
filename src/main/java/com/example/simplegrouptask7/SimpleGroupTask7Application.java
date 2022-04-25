@@ -6,7 +6,7 @@
 //          * CHARACTER VARYING(30) обычно не применяется. Обычно применяется varchar(n).
 //              Хоть это и синоним, и для бд разницы нет.
 //          * Такое создание таблицы допускает создание полей Title, Price со значением null.
-//              Это не логично.
+//              Это не логично
 package com.example.simplegrouptask7;
 
 import org.springframework.boot.SpringApplication;

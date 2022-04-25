@@ -11,7 +11,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // Например, можно было сформировать следующий метод вместо реализованного:
     // Product findByTitleAndPrice(String title, Integer price)
     // либо Optional<Product> findByTitleAndPrice(String title, Integer price)
-    @Query("select p from Product p where p.title = ?1 and p.price = ?2")
-    Product findProductByTitleAndPrice(String title, int price);
+
+    Product findByTitleAndPrice(String title, int price);
 
 }

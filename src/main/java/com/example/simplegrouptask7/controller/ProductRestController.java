@@ -1,8 +1,6 @@
 package com.example.simplegrouptask7.controller;
 
 import com.example.simplegrouptask7.entity.Product;
-import com.example.simplegrouptask7.exceptionHandling.IsSuchProductException;
-import com.example.simplegrouptask7.exceptionHandling.NoSuchProductException;
 import com.example.simplegrouptask7.exceptionHandling.ProductIncorrectData;
 import com.example.simplegrouptask7.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
@@ -54,13 +53,17 @@ public class ProductRestController {
     // Но для многих ситуаций уже есть сформированные эксепшены. Если работаем с подключенной библиотекой,
     // то надо бы их использовать.
     @PostMapping("/products")
-    public Product saveOrUpdateProduct(@RequestBody Product product) {
-        Product productFromDB = productService.findProductByTitleAndPrice(product.getTitle(), product.getPrice());
-        if(product.equals(productFromDB)) {
-            throw new IsSuchProductException("there is such a product in database");
+    public Product saveOrUpdateProduct(@RequestBody Product product) {// если в аргументах новый продукт или измененный,
+        // его ведь нет в базе?(title или(и) price разные), значит ексепшн не сработает и продукт добавится или обновится, (проверил через postman)
+        if (!product.getTitle().isEmpty() && product.getPrice() > 0) {
+            Product productFromDB = productService.findProductByTitleAndPrice(product.getTitle(), product.getPrice());
+            if(product.equals(productFromDB)) {
+                throw new EntityExistsException("there is such a product in database");
+            }
+            productService.saveOrUpdateProduct(product);
+            return productService.findProductByTitleAndPrice(product.getTitle(), product.getPrice());
         }
-        productService.saveOrUpdateProduct(product);
-        return product;
+        else throw new EntityNotFoundException("There is no product");
     }
 
     // todo Ранее был уже комментарий про EntityNotFoundException.
@@ -68,14 +71,14 @@ public class ProductRestController {
     public String deleteProduct(@PathVariable(name="id") Long id) {
         Product product = productService.findByIdProduct(id);
         if(product == null) {
-            throw new NoSuchProductException("There is no product with id = " + id);
+            throw new EntityNotFoundException("There is no product with id = " + id);
         }
         productService.deleteByIdProduct(id);
         return "Product " + product.getTitle() + " was deleted";
     }
 
     @ExceptionHandler
-    public ResponseEntity<ProductIncorrectData> handleException(NoSuchProductException exception) {
+    public ResponseEntity<ProductIncorrectData> handleException(EntityNotFoundException exception) {
         ProductIncorrectData productIncorrectData =  new ProductIncorrectData(exception.getMessage());
         return new ResponseEntity<>(productIncorrectData, HttpStatus.NOT_FOUND);
     }
@@ -87,7 +90,7 @@ public class ProductRestController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ProductIncorrectData> handleException(IsSuchProductException exception) {
+    public ResponseEntity<ProductIncorrectData> handleException(EntityExistsException exception) {
         ProductIncorrectData productIncorrectData =  new ProductIncorrectData(exception.getMessage());
         return new ResponseEntity<>(productIncorrectData, HttpStatus.OK);
     }
