@@ -21,8 +21,6 @@ public class Product {
 
     private Integer price;
 
-    //todo Не используется этот конструктор. Зачем он?
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
