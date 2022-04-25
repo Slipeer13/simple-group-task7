@@ -1,8 +1,8 @@
 CREATE TABLE product
 (
-    Id SERIAL PRIMARY KEY,
-    Title CHARACTER VARYING(30),
-    Price integer
+    id SERIAL PRIMARY KEY,
+    title varchar(30) not null,
+    price integer not null
 
 );
 INSERT INTO public.product(

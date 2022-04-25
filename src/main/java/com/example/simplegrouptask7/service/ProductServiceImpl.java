@@ -39,12 +39,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void saveOrUpdateProduct(Product product) {
+        //здесь проверка идёт новый product или нет, если новый сохраняется, если нет обновляется
         productRepository.save(product);
     }
 
     @Override
     public Product findProductByTitleAndPrice(String title, int price) {
-        return productRepository.findProductByTitleAndPrice(title, price);
+        return productRepository.findByTitleAndPrice(title, price);
     }
 
 
