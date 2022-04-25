@@ -1,14 +1,16 @@
-package com.example.simpleGroupTask7.entity;
+package com.example.simplegrouptask7.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Data
-@Table(name = "products")
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@Table(name = "product")
 public class Product {
 
     @Id
@@ -18,8 +20,6 @@ public class Product {
     private String title;
 
     private Integer price;
-
-    //todo Не используется этот конструктор. Зачем он?
 
     @Override
     public boolean equals(Object o) {

@@ -1,14 +1,13 @@
-package com.example.simpleGroupTask7.controller;
+package com.example.simplegrouptask7.controller;
 
-import com.example.simpleGroupTask7.entity.Product;
-import com.example.simpleGroupTask7.exceptionHandling.IsSuchProductException;
-import com.example.simpleGroupTask7.exceptionHandling.NoSuchProductException;
-import com.example.simpleGroupTask7.exceptionHandling.ProductIncorrectData;
-import com.example.simpleGroupTask7.service.ProductService;
+import com.example.simplegrouptask7.entity.Product;
+import com.example.simplegrouptask7.exceptionHandling.IsSuchProductException;
+import com.example.simplegrouptask7.exceptionHandling.NoSuchProductException;
+import com.example.simplegrouptask7.exceptionHandling.ProductIncorrectData;
+import com.example.simplegrouptask7.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -24,13 +23,11 @@ public class ProductRestController {
         this.productService = productService;
     }
 
-    //todo Зачем именованная переменная, можно сразу возвращать результат работы сервиса.
     @GetMapping("/products")
     public List<Product> showAllProducts() {
         return productService.findAllProducts();
     }
 
-    //todo Есть уже EntityNotFoundException. Свою можно не делать.
     @GetMapping("/products/{id}")
     public Product getProduct(@PathVariable(name="id") Long id) {
         Product product = productService.findByIdProduct(id);
@@ -40,16 +37,25 @@ public class ProductRestController {
         return product;
     }
 
-    //todo Если метод post, почему тогда название метода getProduct?
-    //      Если добавлять продукты с одинаковым названием и прайсом, что должно происходить?
-    //      Сейчас они просто добавляются, если в бд нет настроек об уникальности каких-либо полей.
-    //      Мне кажется, что это не логично.
-    //      Для чего слэш в конце адреса?
+    //todo Запрос на создание таблицы, приведённый в script.txt позволяет создать, например, продукт:
+    // {
+    //    "title":null,
+    //    "price":100
+    // }
+    // Как следствие, переопределённый метод equals в сущность Product отрабатывает как реализован
+    // и два таких объекта не считает equals друг другу.
+    // Можно создать сколько угодно таких некорректных объектов в БД.
+    // Метод называется savaOrUpdateProduct().
+    // Судя по названию, метод предназначен для создания или обновления продуктов в БД.
+    // При этом, по факту данный метод никакого обновления не выполняет он только создаёт новый продукт,
+    // если нет точного совпадения по title и price. Либо бросает исключение, если такое совпадение есть.
+    // Как тогда обновить цену у существующего уже продукта?
+    // Есть EntityExistsException. Создавать свои ексепшены это хорошо.
+    // Но для многих ситуаций уже есть сформированные эксепшены. Если работаем с подключенной библиотекой,
+    // то надо бы их использовать.
     @PostMapping("/products")
     public Product saveOrUpdateProduct(@RequestBody Product product) {
-        System.out.println(product);
         Product productFromDB = productService.findProductByTitleAndPrice(product.getTitle(), product.getPrice());
-        System.out.println(productFromDB);
         if(product.equals(productFromDB)) {
             throw new IsSuchProductException("there is such a product in database");
         }
@@ -57,6 +63,7 @@ public class ProductRestController {
         return product;
     }
 
+    // todo Ранее был уже комментарий про EntityNotFoundException.
     @DeleteMapping("/products/{id}")
     public String deleteProduct(@PathVariable(name="id") Long id) {
         Product product = productService.findByIdProduct(id);
@@ -64,7 +71,7 @@ public class ProductRestController {
             throw new NoSuchProductException("There is no product with id = " + id);
         }
         productService.deleteByIdProduct(id);
-        return "Product with id " + id + "was deleted";
+        return "Product " + product.getTitle() + " was deleted";
     }
 
     @ExceptionHandler

@@ -1,0 +1,10 @@
+CREATE TABLE product
+(
+    Id SERIAL PRIMARY KEY,
+    Title CHARACTER VARYING(30),
+    Price integer
+
+);
+INSERT INTO public.product(
+	title, price)
+	VALUES ('ps4', 1200);

@@ -1,4 +1,4 @@
-package com.example.simpleGroupTask7.exceptionHandling;
+package com.example.simplegrouptask7.exceptionHandling;
 
 public class ProductIncorrectData {
 
